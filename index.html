@@ -84,8 +84,6 @@
             .append("svg")
             .attr("width", w)
             .attr("height", h)
-            
-
             .call(zoom) 
             ; 
 
@@ -123,101 +121,67 @@
 
                       });
 
-                         drawBar();                       
+                         drawPie();                       
                                   
                                });
 //console.log(data);
 
 console.log(data1);
 
-                var Age_CHART_WIDTH = 180;
-                var Age_CHART_HEIGHT = 200;
-                var pushChart_vertical =100;
-                var pushChart_horizontal = 800;
-
-                svg.append("text")
-                      .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
-                      .attr("transform", "translate(900, 50)")  // text is drawn off the screen top left, move down and out and rotate
-                      .text("Number of Deaths per Age Group Chart");
+                
+                var pushChart_vertical =200;
+                var pushChart_horizontal = 900;
                 
 
-                function drawBar() 
+                function drawPie() 
                 {
-                  var maxValue = d3.max(data1);
-                  var xScale = d3.scale.linear();
-                  var yScale = d3.scale.linear();
+      var data3 = [{legend:"0-10", value:143, color: "lime"}, 
+                  {legend:"11-20", value:48, color: "green"}, 
+                  {legend:"21-40", value:58, color: "blue"}, 
+                  {legend:"41-60", value:57, color: "yellow"},
+                  {legend:"61-80", value:91, color: "orange"},
+                  {legend:">80", value:174, color: "red"}];
 
-                  xScale.domain([0, 180]).range([0, Age_CHART_WIDTH]);
-                  yScale.domain([0, 5]).range([Age_CHART_HEIGHT, 0]);
+      var svg = d3.select("svg"),
+          width = 200,
+          height = 200,
+          radius = Math.min(width, height) / 2,
+          g = svg.append("g").attr("transform", "translate("+pushChart_horizontal+","+pushChart_vertical+")");
 
-                  
-                  var g1 = d3.select('svg').select('g');
+      
+      var pie = d3.layout.pie()
+          
+          .sort(null)
+          .value(function(d) { return d.value; });
 
+      var path = d3.svg.arc()
+          .outerRadius(radius - 10)
+          .innerRadius(0);
 
+      var label = d3.svg.arc()
+          .outerRadius(radius - 40)
+          .innerRadius(radius - 40);
 
-                  var xAxis = d3.svg.axis()
-                      .scale(xScale)
-                      .orient('bottom')
-                      .tickFormat(function(d) { return "" + d; });
+      
 
-                    var yAxis = d3.svg.axis()
-                      .scale(yScale)
-                      .orient('left')
-                      .ticks(6);
+        var arc = g.selectAll(".arc")
+          .data(pie(data3))
+          .enter().append("g")
+            .attr("class", "arc");
 
+        arc.append("path")
+            .attr("d", path)
+            .style("fill", function(d) { return d.data.color;
+                          })
 
-                    g1.append('g')
-                      .attr('class', 'axis')
-                      .attr('transform', 'translate('+pushChart_horizontal+',' + (Age_CHART_HEIGHT+pushChart_vertical) + ')')
-                      .call(xAxis)
-                      .selectAll("text")
-                      .attr("y", 0)
-                      .attr("x", 9)
-                      .attr("dy", ".35em")
-                      .attr("transform", "rotate(90)")
-                      .style("text-anchor", "start");
+        arc.append("text")
+            .attr("transform", function(d) { return "translate(" + (label.centroid(d)+10) + ")"; })
+            .attr("dy", "0.35em")
+            .text(function(d) { return d.data.legend; })
+            .attr("font-size", "10px")
+            .attr("stroke-width", "3px");
+      
 
-                    g1.append('g')
-                      .attr('class', 'axis')
-                      .attr('transform', 'translate('+pushChart_horizontal+','+pushChart_vertical+')')
-                      .call(yAxis);
-                      
-
-                    g1.selectAll('rect')
-                      .data(data1)
-                      .enter()
-                      .append('rect')
-                      .style('fill', function(d) { return readAgeGroup(d);   })
-                      .attr('width', function(d) {return d.count;})
-                      .attr('height', 20)
-                      .attr("stroke", "black")
-                      .attr('x', pushChart_horizontal)
-                      .attr('y', function(d) { return (yScale(d.age)-20 +pushChart_vertical) ;   }); 
-
-                    g1.selectAll(".myLabel")//selection via class
-                      .data(data1)
-                      .enter()
-                      .append("text")
-                      .attr("class", "myLabel")//adding a class to the label
-                      .text(function(d) {
-                             return d.count;
-                               })
-                      .attr("x", function(d) { return xScale(d.count)+pushChart_horizontal+10; })
-                      .attr("y", function(d) { return yScale(d.age) +pushChart_vertical -10; })
-                      .attr("font-family", "sans-serif")
-                      .attr("font-size", "7px")
-                      .attr("fill", "black");
-
-
-                    function readAgeGroup(d) {
-                            if (d.age == 0) {return "lime";}
-                            else if (d.age == 1) {return "green";}
-                            else if (d.age == 2) {return "blue";}
-                            else if (d.age == 3) {return "yellow";}
-                            else if (d.age == 4) {return "orange";}
-                            else {return "red";}
-                          }
-                          
                 }
 
     var CHART_WIDTH = 600;
@@ -292,9 +256,17 @@ console.log(data1);
           .attr("x", function(d) { return xScale(d.date)+100; })
           .attr("y", function(d) { return yScale(d.death); })
           .attr("class","incident")
-          
+          /*
+          .on("click", function(d){
+              d3.selectAll("circle").attr("", 7);
+              
+              d3.select(this).attr("class","incident");
+                  })
+          .on("mouseout", function(d){
+              d3.selectAll("circle").attr("r", 1.5);
+              d3.select(this).attr("class","incident");  })
             
-          
+          */
             
             ;
     
@@ -374,7 +346,7 @@ console.log(data1);
                     .enter()
                     .append("circle")
                     .attr("r", 5)
-                    .attr("fill", "black")
+                    .attr("fill", "white")
                     .attr("stroke", "black")
                     .attr("stroke-width", "2px")
                     .attr("cx", function(d) { return d.x; })
@@ -397,8 +369,9 @@ console.log(data1);
 
       shapes.append("circle")
           .filter(function(d){ return (d.gender == 1); })
-          .attr("r", 3)
-          .attr("fill", "lime")
+
+          .attr("r", 2)
+          .style('fill', function(d) { return readAgeGroup(d);   })
           .attr("stroke", "black")
           .attr("stroke-width", "0.5px")
           .on("click", function(d) {
@@ -409,15 +382,25 @@ console.log(data1);
 
       shapes.append("rect")
           .filter(function(d){ return (d.gender ==0 ); })
-          .attr("width", 2)
+          .attr("width", 3)
           .attr("height", 5)
-          .attr("fill", "grey")
+          .style('fill', function(d) { return readAgeGroup(d);   })
           .attr("stroke", "black")
           .attr("stroke-width", "0.5px")
           .on("click", function(d) {
                   console.log(d);})
           .attr("x", function(d) { return d.x*30; })
           .attr("y", function(d) { return h-d.y*30; });
+
+
+          function readAgeGroup(d) {
+                            if (d.age == 0) {return "blue";}
+                            else if (d.age == 1) {return "green";}
+                            else if (d.age == 2) {return "cyan";}
+                            else if (d.age == 3) {return "yellow";}
+                            else if (d.age == 4) {return "orange";}
+                            else {return "red";}
+                          }
 
       };
 
