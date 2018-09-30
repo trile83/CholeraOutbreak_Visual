@@ -187,22 +187,37 @@ console.log(data1);
                       .data(data1)
                       .enter()
                       .append('rect')
-                      .style('fill', 'steelblue')
+                      .style('fill', function(d) { return readAgeGroup(d);   })
                       .attr('width', function(d) {return d.count;})
                       .attr('height', 20)
+                      .attr("stroke", "black")
                       .attr('x', pushChart_horizontal)
                       .attr('y', function(d) { return (yScale(d.age)-20 +pushChart_vertical) ;   }); 
 
+                    g1.selectAll(".myLabel")//selection via class
+                      .data(data1)
+                      .enter()
+                      .append("text")
+                      .attr("class", "myLabel")//adding a class to the label
+                      .text(function(d) {
+                             return d.count;
+                               })
+                      .attr("x", function(d) { return xScale(d.count)+pushChart_horizontal+10; })
+                      .attr("y", function(d) { return yScale(d.age) +pushChart_vertical -10; })
+                      .attr("font-family", "sans-serif")
+                      .attr("font-size", "7px")
+                      .attr("fill", "black");
 
 
                     function readAgeGroup(d) {
-                            if (data1.age == 0) {return "0-10";}
-                            else if (data1.age == 1) {return "11-20";}
-                            else if (data1.age == 2) {return "21-40";}
-                            else if (data1.age == 3) {return "41-60";}
-                            else if (data1.age == 4) {return "61-80";}
-                            else {return ">80";}
+                            if (d.age == 0) {return "lime";}
+                            else if (d.age == 1) {return "green";}
+                            else if (d.age == 2) {return "blue";}
+                            else if (d.age == 3) {return "yellow";}
+                            else if (d.age == 4) {return "orange";}
+                            else {return "red";}
                           }
+                          
                 }
 
     var CHART_WIDTH = 600;
