@@ -51,6 +51,12 @@
 
 <script type="text/javascript">
 
+
+
+
+
+
+
         d3.csv("pumps.csv", display, function(error, csv) {
                 text = container.selectAll("text")
                       .data(csv)
@@ -70,23 +76,31 @@
 
 
  //Width and height
-      var w = 2000;
-      var h = 1000;
+                var w = 2000;
+                var h = 1000;
 
 
-      var zoom = d3.behavior.zoom()
-          .scaleExtent([1, 10])
-          .on("zoom", zoomed);
+                var zoom = d3.behavior.zoom()
+                    .scaleExtent([1, 10])
+                    .on("zoom", zoomed);
 
 
 //Create SVG element
-      var svg = d3.select("body")
-            .append("svg")
-            .attr("width", w)
-            .attr("height", h)
-            .call(zoom) 
-            ; 
+                var svg = d3.select("body")
+                      .append("svg")
+                      .attr("width", w)
+                      .attr("height", h)
+                      .call(zoom) 
+                      ; 
 
+
+//Title
+                  svg.append("text")
+                      .attr("text-anchor", "middle")  
+                      .attr("font-size", "16px")
+                      .attr("transform", "translate(150, 10)")  
+                      .text("1854 Cholera Outbreak in London")
+                      ;
 
     //Draw Age Bar Chart
 
@@ -121,175 +135,230 @@
 
                       });
 
-                         drawPie();                       
+                         drawPie(); 
+                         create_legend();                      
                                   
                                });
-//console.log(data);
 
-console.log(data1);
+
+        console.log(data1);
 
                 
                 var pushChart_vertical =200;
                 var pushChart_horizontal = 900;
+
+
+
+
+            function create_legend() 
+
+              {
+                var age_group =[{legend:"0-10",  color: "lime", value: 0}, 
+                                {legend:"11-20",  color: "green", value:10}, 
+                                {legend:"21-40",  color: "blue", value: 20}, 
+                                {legend:"41-60", color: "yellow", value: 30},
+                                {legend:"61-80",  color: "orange", value: 40},
+                                {legend:">80",  color: "red", value: 50}];
+
+
+                var svg = d3.select("svg"),
+                      width = 200,
+                      height = 200,
+                      radius = Math.min(width, height) / 2,
+                      g = svg.append("g").attr("transform", "translate("+pushChart_horizontal+","+pushChart_vertical+")");
+
+                g.selectAll('rect')
+                      .data(age_group)
+                      .enter()
+                      .append('rect')
+                      .attr('width', 20)
+                      .attr('height', 10)
+                      .style("fill", function(d) {return d.color; })
+                      .attr("stroke", "black")
+                      .attr("x", 100)
+                      .attr("y", function(d) { return (d.value); });
+
+                g.selectAll('text')
+                      .data(age_group)
+                      .enter()
+                      .append('text')
+                      .text(function(d) {return d.legend; })
+                      
+                      .attr("x", 130)
+                      .attr("y", function(d) { return (d.value)+10; })
+                      .attr("font-size", "10px")
+                      .attr("stroke-width", "3px");;
+
+
+              }
+
+
+                svg.append("text")
+                      .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+                      .attr("transform", "translate(900, 80)")  // text is drawn off the screen top left, move down and out and rotate
+                      .text("Percentage of Total Deaths per Age Group Chart");
+
+
+              
                 
 
-                function drawPie() 
-                {
-      var data3 = [{legend:"0-10", value:143, color: "lime"}, 
-                  {legend:"11-20", value:48, color: "green"}, 
-                  {legend:"21-40", value:58, color: "blue"}, 
-                  {legend:"41-60", value:57, color: "yellow"},
-                  {legend:"61-80", value:91, color: "orange"},
-                  {legend:">80", value:174, color: "red"}];
+    function drawPie() 
+     {
+                var data3 = [{legend:"25.04%", value:143, color: "lime"}, 
+                              {legend:"8.41%", value:48, color: "green"}, 
+                              {legend:"10.16%", value:58, color: "blue"}, 
+                              {legend:"9.98%", value:57, color: "yellow"},
+                              {legend:"15.94%", value:91, color: "orange"},
+                              {legend:"30.47%", value:174, color: "red"}];
 
-      var svg = d3.select("svg"),
-          width = 200,
-          height = 200,
-          radius = Math.min(width, height) / 2,
-          g = svg.append("g").attr("transform", "translate("+pushChart_horizontal+","+pushChart_vertical+")");
+                var svg = d3.select("svg"),
+                    width = 200,
+                    height = 200,
+                    radius = Math.min(width, height) / 2,
+                    g = svg.append("g").attr("transform", "translate("+pushChart_horizontal+","+pushChart_vertical+")");
 
-      
-      var pie = d3.layout.pie()
-          
-          .sort(null)
-          .value(function(d) { return d.value; });
+                
+                var pie = d3.layout.pie()
+                    
+                    .sort(null)
+                    .value(function(d) { return d.value; });
 
-      var path = d3.svg.arc()
-          .outerRadius(radius - 10)
-          .innerRadius(0);
+                var path = d3.svg.arc()
+                    .outerRadius(radius - 10)
+                    .innerRadius(0);
 
-      var label = d3.svg.arc()
-          .outerRadius(radius - 40)
-          .innerRadius(radius - 40);
+                var label = d3.svg.arc()
+                    .outerRadius(radius - 40)
+                    .innerRadius(radius - 40);
 
-      
+                
 
-        var arc = g.selectAll(".arc")
-          .data(pie(data3))
-          .enter().append("g")
-            .attr("class", "arc");
+                  var arc = g.selectAll(".arc")
+                    .data(pie(data3))
+                    .enter().append("g")
+                      .attr("class", "arc");
 
-        arc.append("path")
-            .attr("d", path)
-            .style("fill", function(d) { return d.data.color;
-                          })
+                  arc.append("path")
+                      .attr("d", path)
+                      .style("fill", function(d) { return d.data.color;
+                                    })
 
-        arc.append("text")
-            .attr("transform", function(d) { return "translate(" + (label.centroid(d)+10) + ")"; })
-            .attr("dy", "0.35em")
-            .text(function(d) { return d.data.legend; })
-            .attr("font-size", "10px")
-            .attr("stroke-width", "3px");
-      
+                  arc.append("text")
+                      .attr("transform", function(d) { return "translate(" + (label.centroid(d)+10) + ")"; })
+                      .attr("dy", "0.35em")
+                      .text(function(d) { return d.data.legend; })
+                      .attr("font-size", "10px")
+                      .attr("stroke-width", "3px");
+                
 
                 }
 
-    var CHART_WIDTH = 600;
-    var CHART_HEIGHT = 160;
+            var CHART_WIDTH = 600;
+            var CHART_HEIGHT = 160;
 
-    var MAX_BAR_HEIGHT = 100;
+            var MAX_BAR_HEIGHT = 100;
 
-    var deathdays = [];
+            var deathdays = [];
 
-    svg.append("text")
-            .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
-            .attr("transform", "translate(180, 80)")  // text is drawn off the screen top left, move down and out and rotate
-            .text("Number of Deaths per Day Chart");
-
-
-    function drawChart() {
+            svg.append("text")
+                    .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+                    .attr("transform", "translate(180, 80)")  // text is drawn off the screen top left, move down and out and rotate
+                    .text("Number of Deaths per Day Chart");
 
 
-  
-      // define the x scale (horizontal)
-        var mindate = new Date(2001,7,19),
-            maxdate = new Date(2001,8,29);
+            function drawChart() {
 
 
-      var maxValue = d3.max(deathdays);
-      var xScale = d3.time.scale().domain([mindate, maxdate]).range([0, CHART_WIDTH] );     ;
-
-      var yScale = d3.scale.linear();
-
-      /*  xScale.domain([mindate, maxdate]).range([0, CHART_WIDTH]);*/
-      
-      yScale.domain([0,160]).range([CHART_HEIGHT+100, 100] );
+          
+              // define the x scale (horizontal)
+                var mindate = new Date(2001,7,19),
+                    maxdate = new Date(2001,8,29);
 
 
-      var g = d3.select('svg').select('g');
+              var maxValue = d3.max(deathdays);
+              var xScale = d3.time.scale().domain([mindate, maxdate]).range([0, CHART_WIDTH] );     ;
 
-      var xAxis = d3.svg.axis()
-          .scale(xScale)
-          .orient('bottom')
-          .ticks(d3.time.day, 2)
-          ;
+              var yScale = d3.scale.linear();
 
-        var yAxis = d3.svg.axis()
-          .scale(yScale)
-          .orient('left');
-
-
-        g.append('g')
-          .attr('class', 'axis')
-          .attr('transform', 'translate(100,' + (CHART_HEIGHT+100) + ')')
-          .call(xAxis)
-          .selectAll("text")
-          .attr("y", 0)
-          .attr("x", 9)
-          .attr("dy", ".35em")
-          .attr("transform", "rotate(90)")
-          .style("text-anchor", "start");
-
-        g.append('g')
-          .attr('class', 'axis')
-          .attr('transform', 'translate(100,0)')
-          .call(yAxis);
-
-        g.selectAll('rect')
-          .data(deathdays)
-          .enter()
-          .append('rect')
-          .attr('width', 10)
-          .attr('height', function(d) {return d.death ; })
-          .attr("fill", "blue")
-          .attr("stroke", "blue")
-          .attr("x", function(d) { return xScale(d.date)+100; })
-          .attr("y", function(d) { return yScale(d.death); })
-          .attr("class","incident")
-          /*
-          .on("click", function(d){
-              d3.selectAll("circle").attr("", 7);
+              /*  xScale.domain([mindate, maxdate]).range([0, CHART_WIDTH]);*/
               
-              d3.select(this).attr("class","incident");
-                  })
-          .on("mouseout", function(d){
-              d3.selectAll("circle").attr("r", 1.5);
-              d3.select(this).attr("class","incident");  })
-            
-          */
-            
-            ;
-    
-        g.selectAll(".myLabel")//selection via class
-          .data(deathdays)
-          .enter()
-          .append("text")
-          .attr("class", "myLabel")//adding a class to the label
-          .text(function(d) {
-                 return d.death;
-                   })
-          .attr("x", function(d) { return xScale(d.date)+100; })
-          .attr("y", function(d) { return yScale(d.death) - 10; })
-          .attr("font-family", "sans-serif")
-          .attr("font-size", "7px")
-          .attr("fill", "black");
+              yScale.domain([0,160]).range([CHART_HEIGHT+100, 100] );
 
 
-        // now add titles to the axes
-        g.append("text")
-            .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
-            .attr("transform", "translate(40,"+(CHART_HEIGHT+200)/2+")rotate(90)")  // text is drawn off the screen top left, move down and out and rotate
-            .text("Number of Deaths");
+              var g = d3.select('svg').select('g');
+
+              var xAxis = d3.svg.axis()
+                  .scale(xScale)
+                  .orient('bottom')
+                  .ticks(d3.time.day, 2)
+                  ;
+
+                var yAxis = d3.svg.axis()
+                  .scale(yScale)
+                  .orient('left');
+
+
+                g.append('g')
+                  .attr('class', 'axis')
+                  .attr('transform', 'translate(100,' + (CHART_HEIGHT+100) + ')')
+                  .call(xAxis)
+                  .selectAll("text")
+                  .attr("y", 0)
+                  .attr("x", 9)
+                  .attr("dy", ".35em")
+                  .attr("transform", "rotate(90)")
+                  .style("text-anchor", "start");
+
+                g.append('g')
+                  .attr('class', 'axis')
+                  .attr('transform', 'translate(100,0)')
+                  .call(yAxis);
+
+                g.selectAll('rect')
+                  .data(deathdays)
+                  .enter()
+                  .append('rect')
+                  .attr('width', 10)
+                  .attr('height', function(d) {return d.death ; })
+                  .attr("fill", "blue")
+                  .attr("stroke", "blue")
+                  .attr("x", function(d) { return xScale(d.date)+100; })
+                  .attr("y", function(d) { return yScale(d.death); })
+                  .attr("class","incident")
+                  /*
+                  .on("click", function(d){
+                      d3.selectAll("circle").attr("", 7);
+                      
+                      d3.select(this).attr("class","incident");
+                          })
+                  .on("mouseout", function(d){
+                      d3.selectAll("circle").attr("r", 1.5);
+                      d3.select(this).attr("class","incident");  })
+                    
+                  */
+                    
+                    ;
+            
+                g.selectAll(".myLabel")//selection via class
+                  .data(deathdays)
+                  .enter()
+                  .append("text")
+                  .attr("class", "myLabel")//adding a class to the label
+                  .text(function(d) {
+                         return d.death;
+                           })
+                  .attr("x", function(d) { return xScale(d.date)+100; })
+                  .attr("y", function(d) { return yScale(d.death) - 10; })
+                  .attr("font-family", "sans-serif")
+                  .attr("font-size", "7px")
+                  .attr("fill", "black");
+
+
+                // now add titles to the axes
+                g.append("text")
+                    .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+                    .attr("transform", "translate(40,"+(CHART_HEIGHT+200)/2+")rotate(90)")  // text is drawn off the screen top left, move down and out and rotate
+                    .text("Number of Deaths");
 
 
 
@@ -438,74 +507,77 @@ console.log(data1);
                       drawIncident();
                     });
               
-console.log(death_age_sex);
+            console.log(death_age_sex);
 
-//Read JSON file to sketch map
-      d3.json("streets.json", function(error,json) {
-          path = container.append("g")
-            .attr("class","path")  
-            .selectAll("path")
-            .data(json)
-            .enter()
-            .append("path")
-            .attr("d", function(points){
-              return lineFunction(points)
-            });
-        });
-
-
-      function display(d) {
-        d.x = d.x*30;
-        d.y = d.y*30;
-        return d;
-      }
-
-      function zoomed() {
-        svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");    
-      }
-
-      function readDateof2Chart(d) {
-                
-                if (d.date == d.date) {return "red";}
-                
-                
-            }
-
-//Draw Gender Bar Chart
-
-        var data2 = new Array;
-
-        d3.csv("deaths_age_sex.csv", function(d) {
-          return {
-            gender: d.gender
-          };
-        },
-
-  
-       function(rows) {
-             
-            var counts = {};
-            rows.forEach(function(r) {
-                var key = r.gender;
-                if (!counts[key]) {
-                    counts[key] = {
-                       gender: r.gender,
-                       count: 0
-                    };
-                }
-                counts[key].count++;
-            });
-
-            
-            Object.keys(counts).forEach(function(key) {
-                data2.push(counts[key]);
+            //Read JSON file to sketch map
+                  d3.json("streets.json", function(error,json) {
+                      path = container.append("g")
+                        .attr("class","path")  
+                        .selectAll("path")
+                        .data(json)
+                        .enter()
+                        .append("path")
+                        .attr("d", function(points){
+                          return lineFunction(points)
+                        });
+                    });
 
 
-                      });
+                  function display(d) {
+                    d.x = d.x*30;
+                    d.y = d.y*30;
+                    return d;
+                  }
 
-                         console.log(data2);                       
-                                  
-                               });
+                  function zoomed() {
+                    svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");    
+                  }
+
+                  function readDateof2Chart(d) {
+                            
+                            if (d.date == d.date) {return "red";}
+                            
+                            
+                        }
+
+            //Draw Gender Bar Chart
+
+                    var data2 = new Array;
+
+                    d3.csv("deaths_age_sex.csv", function(d) {
+                      return {
+                        gender: d.gender
+                      };
+                    },
+
+              
+                   function(rows) {
+                         
+                        var counts = {};
+                        rows.forEach(function(r) {
+                            var key = r.gender;
+                            if (!counts[key]) {
+                                counts[key] = {
+                                   gender: r.gender,
+                                   count: 0
+                                };
+                            }
+                            counts[key].count++;
+                        });
+
+                        
+                        Object.keys(counts).forEach(function(key) {
+                            data2.push(counts[key]);
+
+
+                                  });
+
+                                                            
+                                              
+                                           });
+
+      console.log(data2);
+
 
       
 
