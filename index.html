@@ -235,7 +235,6 @@ var container = svg.append("g")
 
                 
                 var pie = d3.layout.pie()
-                    
                     .sort(null)
                     .value(function(d) { return d.value; });
 
@@ -247,8 +246,6 @@ var container = svg.append("g")
                     .outerRadius(radius - 40)
                     .innerRadius(radius - 40);
 
-                
-
                   var arc = g.selectAll(".arc")
                     .data(pie(data3))
                     .enter().append("g")
@@ -257,7 +254,9 @@ var container = svg.append("g")
                   arc.append("path")
                       .attr("d", path)
                       .style("fill", function(d) { return d.data.color;
-                                    });
+                                    })
+                      .on("mouseover", function(d) {return (d3.select(this).attr("opacity", 0.5));})
+                      .on("mouseout", function(d) {return (d3.select(this).attr("opacity", 1));});
                     
 
                   arc.append("text")
@@ -267,11 +266,6 @@ var container = svg.append("g")
                       .attr("font-size", "10px")
                       .attr("stroke-width", "3px")
                       .attr("fill", "black");
-
-
-
-                 
-                
 
                 }
 
@@ -827,7 +821,7 @@ var container = svg.append("g")
 
 
 
-      var xAxis = d3.svg.axis()
+        var xAxis = d3.svg.axis()
           .scale(xScale)
           .orient('bottom')
           .tickFormat(function(d,i) { return tickText[i]; })
@@ -835,10 +829,11 @@ var container = svg.append("g")
 
           ;
 
+
+      
         var yAxis = d3.svg.axis()
           .scale(yScale)
           .orient('left');
-
 
         g2.append('g')
           .attr('class', 'axis')
@@ -866,6 +861,7 @@ var container = svg.append("g")
             if (d.legend == 0) {return "steelblue" }
               else {return "orange"}
           })
+          
           .attr('width', 90)
           .attr("stroke", "black")
           .attr("height", function(d) {return d.value;})
@@ -877,7 +873,74 @@ var container = svg.append("g")
 
 
 
-//Create 
+//Create link to About page
+
+              var width = 449;
+              var height = 249;
+              var word = "About";
+               
+              var holder = d3.select("svg")
+                    .append("svg")
+                    .attr("width", width)    
+                    .attr("height", height); 
+
+              // draw a rectangle
+              holder.append("a")
+                  .attr("xlink:href", "https://trile83.github.io/")
+                  .append("rect")  
+                  .attr("x", 70)
+                  .attr("y", 35)
+                  .attr("height", 30)
+                  .attr("width", 80)
+                  .style("fill", "lightgreen")
+                  .attr("rx", 10)
+                  .attr("ry", 10);
+
+              // draw text on the screen
+              holder.append("text")
+                  .attr("x", 110)
+                  .attr("y", 48)
+                  .style("fill", "black")
+                  .style("font-size", "16px")
+                  .attr("dy", ".35em")
+                  .attr("text-anchor", "middle")
+                  .style("pointer-events", "none")
+                  .text(word);
+
+
+//Create link to Documentation page
+
+              var p2_width = 449;
+              var p2_height = 249;
+              var word1 = "Documentation";
+               
+              var holder1 = d3.select("svg")
+                    .append("svg")
+                    .attr("width", p2_width)    
+                    .attr("height", p2_height); 
+
+              // draw a rectangle
+              holder1.append("a")
+                  .attr("xlink:href", "https://trile83.github.io/Text_Porject1/")
+                  .append("rect")  
+                  .attr("x", 180)
+                  .attr("y", 35)
+                  .attr("height", 30)
+                  .attr("width", 120)
+                  .style("fill", "lightgreen")
+                  .attr("rx", 10)
+                  .attr("ry", 10);
+
+              // draw text on the screen
+              holder1.append("text")
+                  .attr("x", 240)
+                  .attr("y", 48)
+                  .style("fill", "black")
+                  .style("font-size", "16px")
+                  .attr("dy", ".35em")
+                  .attr("text-anchor", "middle")
+                  .style("pointer-events", "none")
+                  .text(word1);
 
 
 </script>
