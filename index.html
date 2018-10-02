@@ -10,7 +10,7 @@
       path {
         fill: none;
         stroke: black;
-        stroke-width: 1.5px;
+        stroke-width: 0.5px;
       }
 
 
@@ -105,35 +105,20 @@
                   .attr("fill","black");
 
 
-/*
-        d3.csv("pumps.csv", display, function(error, csv) {
-                text = container1.selectAll("text")
-                      .data(csv)
-                      .enter()
-                      .append("text")
-                      .attr('class', 'text')
-                      .text("Pump")
-                      .attr("font-family", "sans-serif")
-                      .attr("font-size", "11px")
-                      .attr("fill", "black")
-                      .attr("stroke-width", "3px")           
-                      .attr("x", function(d) { return d.x + 6; })
-                      .attr("y", function(d) { return h-d.y; })
-                    
-                      ;
-                        });
 
-                        */
 
 var container = svg.append("g")
                   ;
 
       
 //Insert map label
-       container.append("text")
-            .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
-            .attr("transform", "translate(150, 400)")  // text is drawn off the screen top left, move down and out and rotate
+       svg.append("text")
+            .attr("text-anchor", "middle")  
+            .attr("transform", "translate(150, 400)")  
             .text("London Map 1854")
+            .attr("fill", "black")
+            .attr("font-size", "18px")
+            .attr("stroke-width", "1px")
             .attr("fill", "black");
  
 
@@ -272,7 +257,8 @@ var container = svg.append("g")
                   arc.append("path")
                       .attr("d", path)
                       .style("fill", function(d) { return d.data.color;
-                                    })
+                                    });
+                    
 
                   arc.append("text")
                       .attr("transform", function(d) { return "translate(" + (label.centroid(d)+10) + ")"; })
@@ -281,6 +267,10 @@ var container = svg.append("g")
                       .attr("font-size", "10px")
                       .attr("stroke-width", "3px")
                       .attr("fill", "black");
+
+
+
+                 
                 
 
                 }
@@ -332,6 +322,7 @@ var container = svg.append("g")
                 g.append('g')
                   .attr('class', 'axis')
                   .attr('transform', 'translate(100,' + (CHART_HEIGHT+100) + ')')
+                  .attr("stroke-width", "0.5px")
                   .call(xAxis)
                   .selectAll("text")
                   .attr("y", 0)
@@ -353,24 +344,25 @@ var container = svg.append("g")
                   .attr('height', function(d) {return d.death ; })
                   .attr("fill", "blue")
                   .attr("stroke", "blue")
+                  .attr("stroke-width", "0.5px")
                   .attr("x", function(d) { return xScale(d.date)+100; })
                   .attr("y", function(d) { return yScale(d.death); })
                   .attr("class","incident")
-                  .on("mouseover", function(d) {return d3.select(this).attr("fill", "orange");})
-                  .on("click", function(d){
-                              return (readDateof2Chart_rect(d), readDateof2Chart(d));
+                  
+                 .on("mouseover", function(d) {return (d3.select(this).attr("fill", "orange"), readDateof2Chart_rect(d), readDateof2Chart(d));
                          }
                        )
               
                   
                   .on("mouseout", function(d){
-                      d3.selectAll("circle.victims").attr("r", 2);
+                      d3.selectAll("circle.victims").attr("r", 2).style("opacity", 0.2);
                       d3.selectAll("rect.victims").attr("height", 5);
-                      d3.selectAll("rect.victims").attr("width", 3);
+                      d3.selectAll("rect.victims").attr("width", 3).style("opacity", 0.2);
                       d3.select(this)
                                 .attr("fill", "blue")
                       //d3.selectAll("circle").attr("r", 2);
                       d3.select(this).attr("class","incident");  })
+
                   
                     ;
 
@@ -406,12 +398,10 @@ var container = svg.append("g")
             function readDateof2Chart(selectedDate) {
                 d3.selectAll("circle.victims").each(function(d) {
                   if (d.dateOfDeath == selectedDate.date) {
-                    return d3.select(this).attr('r', 7);
+                    return d3.select(this).attr('r', 7).style("opacity", 1);
                   }
-
                     }
                           )
-
                           ;}
 
            
@@ -419,9 +409,8 @@ var container = svg.append("g")
             function readDateof2Chart_rect(selectedDate) {
                 d3.selectAll("rect.victims").each(function(d) {
                   if (d.dateOfDeath == selectedDate.date) {
-                    return d3.select(this).attr('height', 12).attr('width', 8);
+                    return d3.select(this).attr('height', 12).attr('width', 8).style("opacity", 1);
                   }
-
                           })
                           ;}
 
@@ -442,9 +431,6 @@ var container = svg.append("g")
 
 // Draw map
      
-
-
-
 //Line function to read the coordinates 
       var lineFunction = d3.svg.line()
                           .x(function(d) { return d.x*30; })
@@ -462,9 +448,6 @@ var container = svg.append("g")
                 var shapes = svg.selectAll(".shapes")
                       .data(death_age_sex).enter();
 
-
-
-
                 shapes.append("circle")
                     .filter(function(d){ return (d.gender == 1); })
                     .attr('class','victims')
@@ -472,13 +455,12 @@ var container = svg.append("g")
                     .style('fill', function(d) { return readAgeGroup(d);   })
                     .attr("stroke", "black")
                     .attr("stroke-width", "0.5px")
+                    .style("opacity", 0.2)
                     .on("click", function(d) {
                             console.log(d);})
                     .attr("cx", function(d) { return d.x*30; })
                     .attr("cy", function(d) { return h-d.y*30; })
-                    
-                    ;
-
+                                   ;
 
                 shapes.append("rect")
                     .filter(function(d){ return (d.gender ==0 ); })
@@ -488,6 +470,7 @@ var container = svg.append("g")
                     .style('fill', function(d) { return readAgeGroup(d);   })
                     .attr("stroke", "black")
                     .attr("stroke-width", "0.5px")
+                    .style("opacity", 0.2)
                     .on("click", function(d) {
                             console.log(d);})
                     .attr("x", function(d) { return d.x*30; })
@@ -499,9 +482,9 @@ var container = svg.append("g")
       
 
           function readAgeGroup(d) {
-                            if (d.age == 0) {return "blue";}
+                            if (d.age == 0) {return "lime";}
                             else if (d.age == 1) {return "green";}
-                            else if (d.age == 2) {return "cyan";}
+                            else if (d.age == 2) {return "blue";}
                             else if (d.age == 3) {return "yellow";}
                             else if (d.age == 4) {return "orange";}
                             else {return "red";}
@@ -541,6 +524,7 @@ var container = svg.append("g")
                     });
                     
                       drawIncident();
+                      create_legend_map();
                     });
               
             console.log(death_age_sex);
@@ -555,6 +539,93 @@ var container = svg.append("g")
                           .attr("fill", "pink")
                           .style("opacity", 0.5)
                           ;
+
+
+//Add legend
+
+      function create_legend_map() 
+
+              {
+                var age_group =[{legend:"0-10",  color: "lime", value: 0}, 
+                                {legend:"11-20",  color: "green", value:10}, 
+                                {legend:"21-40",  color: "blue", value: 20}, 
+                                {legend:"41-60", color: "yellow", value: 30},
+                                {legend:"61-80",  color: "orange", value: 40},
+                                {legend:">80",  color: "red", value: 50}];
+
+
+                var svg = d3.select("svg"),
+                      width = 200,
+                      height = 200,
+                      radius = Math.min(width, height) / 2,
+                      g = svg.append("g").attr("transform", "translate(200,520)");
+
+                g.selectAll('rect')
+                      .data(age_group)
+                      .enter()
+                      .append('rect')
+                      .attr('width', 20)
+                      .attr('height', 10)
+                      .style("fill", function(d) {return d.color; })
+                      .attr("stroke", "black")
+                      .attr("x", function(d) { return (d.value)*5; })
+                      .attr("y", 400);
+
+                g.selectAll('text')
+                      .data(age_group)
+                      .enter()
+                      .append('text')
+                      .text(function(d) {return d.legend; })
+                      
+                      .attr("x",function(d) { return (d.value)*5+23; })
+                      .attr("y", 410)
+                      .attr("font-size", "10px")
+                      .attr("stroke-width", "3px")
+                      .attr("fill", "black");
+
+              }
+
+
+//Add gender legend
+
+            svg.append('rect')
+                .attr('width', 10)
+                .attr('height', 10)
+                .attr("fill", "grey")
+                .attr('x', 300)
+                .attr('y', 400)
+                .attr('stroke', 'grey')
+                .attr('stroke-width', '1px');
+
+
+            svg.append('text')
+                .text('Male')
+                .attr('x', 315)
+                .attr('y', 410)
+                .attr("font-size", "16px")
+                .attr("stroke-width", "3px")
+                .attr("fill", "black");
+
+
+            svg.append('circle')
+                .attr('r', 5)
+                .attr("fill", "grey")
+                .attr('cx', 370)
+                .attr('cy', 405)
+                .attr('stroke', 'grey')
+                ;
+
+             svg.append('text')
+                .text('Female')
+                .attr('x', 385)
+                .attr('y', 410)
+                .attr("font-size", "16px")
+                .attr("stroke-width", "3px")
+                .attr("fill", "black"); 
+
+
+
+
 //Add location on map
 
               svg.append("text")
@@ -654,10 +725,14 @@ var container = svg.append("g")
                         .enter()
                         .append("path")
                         .style("opacity", 0.5)
+                        .attr("fill", "none")
+                        .attr("stroke", "black")
+                        .attr("stroke-width", "1.5px")
 
                         .attr("d", function(points){
                           return lineFunction(points)
                         });
+
                     });
 
 
@@ -787,16 +862,21 @@ var container = svg.append("g")
           .enter()
           .append('rect')
           .style('fill', function (d) {
-            if (d.legend == 0) {return "red" }
-              else {return "blue"}
+            if (d.legend == 0) {return "steelblue" }
+              else {return "orange"}
           })
-          .attr('width', 50)
+          .attr('width', 90)
           .attr("stroke", "black")
           .attr("height", function(d) {return d.value;})
           .attr('x', function(d) { return xScale(d.legend);})
           .attr('y', function(d) { return yScale(d.value);});
 
                 }
+
+
+
+
+//Create 
 
 
 </script>
