@@ -943,6 +943,42 @@ var container = svg.append("g")
                   .text(word1);
 
 
+//Create link to Youtube video
+
+              var vid_width = 449;
+              var vid_height = 249;
+              var word3 = "Video";
+               
+              var holder2 = d3.select("svg")
+                    .append("svg")
+                    .attr("width", vid_width)    
+                    .attr("height", vid_height); 
+
+              // draw a rectangle
+              holder2.append("a")
+                  .attr("xlink:href", "https://www.youtube.com/watch?v=V_DZNNFdakI&t=3s")
+                  .append("rect")  
+                  .attr("x", 320)
+                  .attr("y", 35)
+                  .attr("height", 30)
+                  .attr("width", 50)
+                  .style("fill", "lightgreen")
+                  .attr("rx", 10)
+                  .attr("ry", 10);
+
+              // draw text on the screen
+              holder2.append("text")
+                  .attr("x", 345)
+                  .attr("y", 48)
+                  .style("fill", "black")
+                  .style("font-size", "16px")
+                  .attr("dy", ".35em")
+                  .attr("text-anchor", "middle")
+                  .style("pointer-events", "none")
+                  .text(word3);
+
+
+
 </script>
 
 </body>
