@@ -220,12 +220,12 @@ var container = svg.append("g")
 
     function drawPie() 
      {
-                var data3 = [{legend:"25.04%", value:143, color: "lime"}, 
-                              {legend:"8.41%", value:48, color: "green"}, 
-                              {legend:"10.16%", value:58, color: "blue"}, 
-                              {legend:"9.98%", value:57, color: "yellow"},
-                              {legend:"15.94%", value:91, color: "orange"},
-                              {legend:"30.47%", value:174, color: "red"}];
+                var data3 = [{legend:"25.04%", value:143, color: "lime", age: 0}, 
+                              {legend:"8.41%", value:48, color: "green", age: 1}, 
+                              {legend:"10.16%", value:58, color: "blue", age: 2}, 
+                              {legend:"9.98%", value:57, color: "yellow", age: 3},
+                              {legend:"15.94%", value:91, color: "orange", age: 4},
+                              {legend:"30.47%", value:174, color: "red", age: 5}];
 
                 var svg = d3.select("svg"),
                     width = 200,
@@ -255,8 +255,15 @@ var container = svg.append("g")
                       .attr("d", path)
                       .style("fill", function(d) { return d.data.color;
                                     })
-                      .on("mouseover", function(d) {return (d3.select(this).attr("opacity", 0.5));})
-                      .on("mouseout", function(d) {return (d3.select(this).attr("opacity", 1));});
+                      .on("mouseover", function(d) {return (d3.select(this).attr("r", 130).attr("opacity", 0.5)), readAge2Chart_circle(d), readAge2Chart_rect(d);})
+
+                      .on("mouseout", function(d){
+                              d3.selectAll("circle.victims").attr("r", 2).style("opacity", 0.2);
+                              d3.selectAll("rect.victims").attr("height", 5);
+                              d3.selectAll("rect.victims").attr("width", 3).style("opacity", 0.2);
+                              d3.select(this).attr("opacity", 1);
+                              //d3.selectAll("circle").attr("r", 2);
+                              d3.select(this).attr("class","incident");  })
                     
 
                   arc.append("text")
@@ -268,6 +275,31 @@ var container = svg.append("g")
                       .attr("fill", "black");
 
                 }
+
+
+                function readAge2Chart_circle(selectedAge) {
+                d3.selectAll("circle.victims").each(function(d) {
+                  if (d.age == selectedAge.data.age) {
+                    return d3.select(this).attr('r', 7).style("opacity", 1);
+                  }
+                    }
+                          )
+                          ;}
+
+                function readAge2Chart_rect(selectedAge) {
+                d3.selectAll("rect.victims").each(function(d) {
+                  if (d.age == selectedAge.data.age) {
+                    return d3.select(this).attr('height', 12).attr('width', 8).style("opacity", 1);
+                  }
+                    }
+                          )
+                          ;}
+
+
+
+
+
+
 
             var CHART_WIDTH = 600;
             var CHART_HEIGHT = 160;
@@ -794,8 +826,8 @@ var container = svg.append("g")
   function drawGenderBar() {
           
       
-      var dataset = [{legend: 0, value: 284},
-                     {legend: 1, value: 287}];
+      var dataset = [{gender: 0, value: 284},
+                     {gender: 1, value: 287}];
 
       var tickText = ["Male", "Female"];               
 
@@ -826,11 +858,8 @@ var container = svg.append("g")
           .orient('bottom')
           .tickFormat(function(d,i) { return tickText[i]; })
           .ticks(1)
-
           ;
-
-
-      
+  
         var yAxis = d3.svg.axis()
           .scale(yScale)
           .orient('left');
@@ -858,19 +887,48 @@ var container = svg.append("g")
           .enter()
           .append('rect')
           .style('fill', function (d) {
-            if (d.legend == 0) {return "steelblue" }
+            if (d.gender == 0) {return "steelblue" }
               else {return "orange"}
           })
-          
+          .on("mouseover", function(d) {return d3.select(this).style("opacity", 0.5), readGender2Chart_rect(d), readGender2Chart_circle(d);
+                         }
+                       )
+              
+                  
+          .on("mouseout", function(d){
+                      d3.selectAll("circle.victims").attr("r", 2).style("opacity", 0.2);
+                      d3.selectAll("rect.victims").attr("height", 5);
+                      d3.selectAll("rect.victims").attr("width", 3).style("opacity", 0.2);
+                      d3.select(this).style("opacity", 1);
+                      d3.select(this).attr("class","incident");  })
+
           .attr('width', 90)
           .attr("stroke", "black")
           .attr("height", function(d) {return d.value;})
-          .attr('x', function(d) { return xScale(d.legend);})
+          .attr('x', function(d) { return xScale(d.gender);})
           .attr('y', function(d) { return yScale(d.value);});
 
                 }
 
 
+
+            function readGender2Chart_circle(selectedGender) {
+                d3.selectAll("circle.victims").each(function(d) {
+                  if (d.gender == selectedGender.gender) {
+                    return d3.select(this).attr('r', 7).style("opacity", 1);
+                  }
+                    }
+                          )
+                          ;}
+
+            function readGender2Chart_rect(selectedGender) {
+                d3.selectAll("rect.victims").each(function(d) {
+                  if (d.gender == selectedGender.gender) {
+                    return d3.select(this).attr('height', 12).attr('width', 8).style("opacity", 1);
+                  }
+                    }
+                          )
+                          ;}
 
 
 //Create link to About page
