@@ -332,7 +332,7 @@ var container = svg.append("g")
               yScale.domain([0,160]).range([CHART_HEIGHT+100, 100] );
 
 
-              var g = d3.select('svg').select('g');
+              var g = svg.append('g');
 
               var xAxis = d3.svg.axis()
                   .scale(xScale)
