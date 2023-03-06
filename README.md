@@ -1,4 +1,4 @@
-# Project1
+# Visualization Project: 1854 Cholera Outbreak based on John Snow Map
 
 ## Link to visualization project 1
 
