@@ -2,4 +2,4 @@
 
 ## Link to visualization
 
-https://trile83.github.io/JonSnow_CholeraOutbreak_Visual/
+https://trile83.github.io/CholeraOutbreak_Visual/
